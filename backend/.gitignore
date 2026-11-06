@@ -33,11 +33,10 @@ build/
 .vscode/
 
 ### Environment variables and secrets ###
+# Environment
 .env
 .env.*
 !.env.example
-application-local.properties
-application-prod-local.properties
 
 ### Logs ###
 *.log
