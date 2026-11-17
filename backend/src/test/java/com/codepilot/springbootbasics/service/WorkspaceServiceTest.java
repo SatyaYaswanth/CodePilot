@@ -24,6 +24,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import com.codepilot.springbootbasics.exception.ResourceNotFoundException;
+import com.codepilot.springbootbasics.entity.WorkspaceMember;
+import com.codepilot.springbootbasics.entity.WorkspaceRole;
+import com.codepilot.springbootbasics.repository.WorkspaceMemberRepository;
 
 @ExtendWith(MockitoExtension.class)
 class WorkspaceServiceTest {
@@ -33,6 +36,9 @@ class WorkspaceServiceTest {
 
     @Mock
     private CodePilotUserRepository codePilotUserRepository;
+
+    @Mock
+    private WorkspaceMemberRepository workspaceMemberRepository;
 
     @InjectMocks
     private WorkspaceService workspaceService;
@@ -86,6 +92,14 @@ class WorkspaceServiceTest {
 
         verify(codePilotUserRepository).findByEmail(email);
         verify(workspaceRepository).save(any(Workspace.class));
+
+        verify(workspaceMemberRepository).save(
+                argThat(member ->
+                        member.getWorkspace().getId().equals(10L)
+                                && member.getUser().equals(user)
+                                && member.getRole() == WorkspaceRole.OWNER
+                )
+        );
     }
 
     @Test

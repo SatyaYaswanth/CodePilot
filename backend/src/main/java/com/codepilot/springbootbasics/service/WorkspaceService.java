@@ -13,18 +13,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import com.codepilot.springbootbasics.exception.ResourceNotFoundException;
+import com.codepilot.springbootbasics.entity.WorkspaceMember;
+import com.codepilot.springbootbasics.entity.WorkspaceRole;
+import com.codepilot.springbootbasics.repository.WorkspaceMemberRepository;
 
 @Service
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final CodePilotUserRepository codePilotUserRepository;
+    private final WorkspaceMemberRepository workspaceMemberRepository;
 
     public WorkspaceService(
             WorkspaceRepository workspaceRepository,
-            CodePilotUserRepository codePilotUserRepository) {
+            CodePilotUserRepository codePilotUserRepository,
+            WorkspaceMemberRepository workspaceMemberRepository) {
+
         this.workspaceRepository = workspaceRepository;
         this.codePilotUserRepository = codePilotUserRepository;
+        this.workspaceMemberRepository = workspaceMemberRepository;
     }
 
     @Transactional
@@ -43,8 +50,16 @@ public class WorkspaceService {
                 user
         );
 
-        Workspace savedWorkspace =
-                workspaceRepository.save(workspace);
+        Workspace savedWorkspace = workspaceRepository.save(workspace);
+
+// Automatically register the creator as workspace OWNER
+        WorkspaceMember ownerMembership = new WorkspaceMember(
+                savedWorkspace,
+                user,
+                WorkspaceRole.OWNER
+        );
+
+        workspaceMemberRepository.save(ownerMembership);
 
         return new WorkspaceResponse(
                 savedWorkspace.getId(),

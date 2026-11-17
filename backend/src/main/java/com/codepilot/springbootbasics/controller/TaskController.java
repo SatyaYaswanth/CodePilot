@@ -23,6 +23,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import com.codepilot.springbootbasics.dto.ApiError;
+import com.codepilot.springbootbasics.dto.AssignTaskRequest;
+import com.codepilot.springbootbasics.dto.UpdateTaskDueDateRequest;
+import com.codepilot.springbootbasics.dto.UpdateTaskStatusRequest;
 
 
 @Tag(
@@ -198,6 +201,85 @@ public class TaskController {
                 user.getEmail()
         );
     }
+
+
+    @Operation(
+            summary = "Assign or unassign a task",
+            description = "Assigns a task to a workspace member. Only OWNER and ADMIN can perform this operation."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Task assignment updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid assignee"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Insufficient workspace permissions"),
+            @ApiResponse(responseCode = "404", description = "Project, task or assignee not found")
+    })
+    @PutMapping("/{taskId}/assignee")
+    public TaskResponse assignTask(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @RequestBody AssignTaskRequest request,
+            Authentication authentication) {
+
+        CodePilotUser user =
+                (CodePilotUser) authentication.getPrincipal();
+
+        return taskService.assignTask(
+                projectId,
+                taskId,
+                request.assigneeId(),
+                user.getEmail()
+        );
+    }
+
+
+
+    @Operation(
+            summary = "Update task deadline",
+            description = "Sets, changes or removes a task deadline. Only OWNER and ADMIN can perform this operation."
+    )
+    @PutMapping("/{taskId}/due-date")
+    public TaskResponse updateTaskDueDate(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @RequestBody UpdateTaskDueDateRequest request,
+            Authentication authentication) {
+
+        CodePilotUser user =
+                (CodePilotUser) authentication.getPrincipal();
+
+        return taskService.updateTaskDueDate(
+                projectId,
+                taskId,
+                request.dueDate(),
+                user.getEmail()
+        );
+    }
+
+
+    @Operation(
+            summary = "Update task status",
+            description = "Updates task workflow status using permitted transitions. Workspace members can perform this operation."
+    )
+    @PutMapping("/{taskId}/status")
+    public TaskResponse updateTaskStatus(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @Valid @RequestBody UpdateTaskStatusRequest request,
+            Authentication authentication) {
+
+        CodePilotUser user =
+                (CodePilotUser) authentication.getPrincipal();
+
+        return taskService.updateTaskStatus(
+                projectId,
+                taskId,
+                request.status(),
+                user.getEmail()
+        );
+    }
+
+
 
     @Operation(
             summary = "Delete task",

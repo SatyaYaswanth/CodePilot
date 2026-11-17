@@ -314,7 +314,7 @@ class TaskServiceTest {
 
         assertEquals("Updated title", response.title());
         assertEquals("Updated description", response.description());
-        assertEquals(TaskStatus.COMPLETED, response.status());
+        assertEquals(TaskStatus.TODO, response.status());
         assertEquals(TaskPriority.HIGH, response.priority());
 
         verify(taskRepository).save(task);
@@ -326,7 +326,7 @@ class TaskServiceTest {
 
         TaskCreateRequest request = new TaskCreateRequest(
                 "Updated title", "Updated description",
-                TaskStatus.COMPLETED, TaskPriority.HIGH
+                null, TaskPriority.HIGH
         );
 
         authorizeProject(20L, email);

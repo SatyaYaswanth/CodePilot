@@ -29,6 +29,9 @@ public class CodePilotUser {
     @OneToMany(mappedBy = "user")
     private List<Workspace> workspaces = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<WorkspaceMember> workspaceMemberships = new ArrayList<>();
+
 
     protected CodePilotUser() {
     }
@@ -78,5 +81,9 @@ public class CodePilotUser {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<WorkspaceMember> getWorkspaceMemberships() {
+        return workspaceMemberships;
     }
 }

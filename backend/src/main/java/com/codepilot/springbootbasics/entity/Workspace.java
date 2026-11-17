@@ -22,6 +22,9 @@ public class Workspace {
     @OneToMany(mappedBy = "workspace")
     private List<Project> projects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "workspace")
+    private List<WorkspaceMember> members = new ArrayList<>();
+
     protected Workspace() {
     }
 
@@ -52,5 +55,9 @@ public class Workspace {
 
     public List<Project> getProjects() {
         return projects;
+    }
+
+    public List<WorkspaceMember> getMembers() {
+        return members;
     }
 }

@@ -75,6 +75,7 @@ class TaskControllerTest {
         );
     }
 
+
     private TaskResponse sampleTask() {
         return new TaskResponse(
                 101L,
@@ -82,9 +83,14 @@ class TaskControllerTest {
                 "Investigate issue",
                 TaskStatus.TODO,
                 TaskPriority.MEDIUM,
-                10L
+                10L,
+                null,   // assigneeId
+                null,   // assigneeEmail
+                null,   // dueDate
+                false   // overdue
         );
     }
+
 
     private String validTaskJson() {
         return """
